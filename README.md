@@ -70,8 +70,7 @@ s.show(t)
 
 with sample output:
 
-```python
-INTEGER OPTIMAL SOLUTION FOUND
+```
         |   Mon     Tue     Wed     Thu     Fri
 --------+----------------------------------------
  Barack |   free  laundry  vacuum  dishes laundry
