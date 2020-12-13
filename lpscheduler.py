@@ -2,9 +2,8 @@
 lpscheduler: a simple linear-programming-based scheduling utility
 """
 
-import copy
 import numpy as np
-
+from copy import deepcopy
 from cvxopt import glpk, matrix, spmatrix
 
 class Expression:
@@ -25,11 +24,15 @@ class Expression:
         return ((index, coeff) for (index, coeff) in self.coeffs.items())
 
     def __add__(self, other):
-        expr = copy.deepcopy(self)
+        expr = deepcopy(self)
         expr += other
         return expr
 
+    def __radd__(self, other):
+        return self + other
+
     def __iadd__(self, other):
+        if other == 0: return self  # for use with `sum`
         for (index, coeff) in other:
             if index in self.coeffs: self.coeffs[index] += coeff
             else:                    self.coeffs[index]  = coeff
@@ -46,9 +49,12 @@ class Expression:
         self *= -1
         return self
 
-    def __rmul__(self, a):
+    def __mul__(self, a):
         """Scalar multiplication."""
-        expr = copy.deepcopy(self)
+        return a * self
+
+    def __rmul__(self, a):
+        expr = deepcopy(self)
         expr *= a
         return expr
 
@@ -68,14 +74,6 @@ class Expression:
             return '({}, {}, {}): {}'.format(who, when, what, coeff)
         s = ', '.join((_pretty_str(index, coeff) for (index, coeff) in self))
         return 'Expression({})'.format(s)
-
-def xsum(sequence):
-    """
-    Version of `sum` that can act on Expressions.
-    """
-    x = Expression({})
-    for s in sequence: x += s
-    return x
 
 class Constraint:
     """
@@ -124,7 +122,7 @@ class Scheduler:
         self.cons = []
         for who in self.who:
             for when in self.when:
-                expr = xsum((self(who, when, what) for what in self.what))
+                expr = sum((self(who, when, what) for what in self.what))
                 self.addcons(Constraint(expr, '=', 1))
 
     def __call__(self, who, when, what):
@@ -242,9 +240,9 @@ class Scheduler:
         J = len(self.when)
         K = len(self.what)
         r = np.random.rand(I, J, K)
-        self.cost = xsum([Expression({(i,j,k): r[i,j,k] for i in range(I)
-                                                        for j in range(J)
-                                                        for k in range(K)})])
+        self.cost = sum([Expression({(i,j,k): r[i,j,k] for i in range(I)
+                                                       for j in range(J)
+                                                       for k in range(K)})])
 
     def shuffle(self):
         """
