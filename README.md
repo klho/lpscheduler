@@ -33,13 +33,13 @@ s = Scheduler(who, when, what)
 # constraint: every chore done each day
 for _what in what:
     for _when in when:
-        expr = xsum(s(_who, _when, _what) for _who in who)
+        expr = sum(s(_who, _when, _what) for _who in who)
         s.addcons(Constraint(expr, '>=', 1))
 
 # constraint: everyone does each chore at least once
 for _who in who:
     for _what in what:
-        expr = xsum(s(_who, _when, _what) for _when in when)
+        expr = sum(s(_who, _when, _what) for _when in when)
         s.addcons(Constraint(expr, '>=', 1))
 
 # constraint: Barack needs Mondays off
@@ -47,11 +47,11 @@ cons = Constraint(s('Barack', 'Mon', 'free'), '=', 1)
 s.addcons(cons)
 
 # constraint: Hillary must do laundry on either Tue or Thu
-expr = xsum(s('Hillary', _when, 'laundry') for _when in ['Tue', 'Thu'])
+expr = sum(s('Hillary', _when, 'laundry') for _when in ['Tue', 'Thu'])
 s.addcons(Constraint(expr, '=', 1))
 
 # constraint: Donald does dishes only once
-cons = Constraint(xsum(s('Donald', _when, 'dishes') for _when in when), '<=', 1)
+cons = Constraint(sum(s('Donald', _when, 'dishes') for _when in when), '<=', 1)
 s.addcons(cons)
 
 # constraint: Justin can't vacuum on MWF
