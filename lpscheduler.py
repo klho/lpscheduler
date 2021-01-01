@@ -219,7 +219,7 @@ class Scheduler:
                 line.append(what.center(l))
             print(' '.join(line))
 
-    def tocsv(self, t):
+    def showcsv(self, t):
         """
         Like `show` but prints as CSV; useful for importing into other programs.
         """
