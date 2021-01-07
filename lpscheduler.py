@@ -202,34 +202,37 @@ class Scheduler:
                 t[i,j] = what
         return t
 
-    def show(self, t):
+    def format(self, t):
         """Show solution as human-readable formatted table."""
         wholen  = max(len(who ) for who  in self.who )
         whenlen = max(len(when) for when in self.when)
         whatlen = max(len(what) for what in self.what)
         l = max(whenlen, whatlen)
-        s = ([' '*wholen, '|'] + [when.center(l) for when in self.when])
-        s = ' '.join(s)
-        print(s)
-        print(('-'*(wholen + 1) + '+' + '-'*len(s))[:len(s)])
+        header = ([' '*wholen, '|'] + [when.center(l) for when in self.when])
+        header = ' '.join(header)
+        s = header + '\n'
+        s += ('-'*(wholen + 1) + '+' + '-'*len(header))[:len(header)]
         for (i, who) in enumerate(self.who):
             line = [who.center(wholen), '|']
             for (j, when) in enumerate(self.when):
                 what = self.what[t[i,j]]
                 line.append(what.center(l))
-            print(' '.join(line))
+            s += '\n' + ' '.join(line)
+        return s
 
-    def showcsv(self, t):
+    def formatcsv(self, t):
         """
-        Like `show` but prints as CSV; useful for importing into other programs.
+        Like `format` but shows as CSV; useful for importing into other
+        programs.
         """
-        print(',' + ','.join(self.when))
+        s = ',' + ','.join(self.when)
         for (i, who) in enumerate(self.who):
             line = who
             for (j, when) in enumerate(self.when):
                 what = self.what[t[i,j]]
                 line += ',' + what
-            print(line)
+            s += '\n' + line
+        return s
 
     def setrandcost(self):
         """
