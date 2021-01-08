@@ -65,7 +65,7 @@ s.setrandcost()
 # run solver and show solution
 options = {'LPX_K_MSGLEV': 0}  # suppress GLPK output
 t = s.solve(**options)
-s.show(t)
+print(s.format(t))
 ```
 
 with sample output:

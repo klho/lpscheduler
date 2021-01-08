@@ -220,17 +220,17 @@ class Scheduler:
             s += '\n' + ' '.join(line)
         return s
 
-    def formatcsv(self, t):
+    def formatcsv(self, t, sep=','):
         """
-        Like `format` but shows as CSV; useful for importing into other
-        programs.
+        Like `format` but shows as CSV (or any other separator); useful for
+        importing into other programs.
         """
-        s = ',' + ','.join(self.when)
+        s = sep + sep.join(self.when)
         for (i, who) in enumerate(self.who):
             line = who
             for (j, when) in enumerate(self.when):
                 what = self.what[t[i,j]]
-                line += ',' + what
+                line += sep + what
             s += '\n' + line
         return s
 
